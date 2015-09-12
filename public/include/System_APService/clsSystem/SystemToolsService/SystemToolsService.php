@@ -3,9 +3,10 @@
 	
 	
 	class clsTools {
-		#modIO
+	#modIO
 		//讀取INI檔資料 GetINIInfo(strIniFile, sSection, sKeyName, sDefaultValue = "") As String
 		public function GetINIInfo($strIniFile,$sSection,$sKeyName,$sDefaultValue = "",$originDataArray = false){
+			
 			if($originDataArray){
 				return parse_ini_file($strIniFile);
 			}else{
@@ -17,9 +18,126 @@
 				}
 			}
 		}
-		#modIO結束
 		
-		#modDataFormate
+		//使用cmd執行指令
+		public function cmdExecute($sCommand){
+			try{
+				shell_exe($sCommand);
+			}catch(Exception $error){
+				return false;
+			}
+		}
+		
+		//建立資料夾 CreateDirectory(sPath)
+		public function CreateDirectory($sPath){
+			if ( !is_dir($sPath) ){//檢查資料夾是否存在，不存在的話就創建資料夾
+				try{
+					mkdir($sPath);
+				}catch(Exception $error){
+					//創建失敗
+					return false;
+				}
+			}
+		}
+		//建立檔案 CreateFile(sFileFullPath)
+		public function CreateFile($sFileFullPath){
+			try{
+				$file = fopen($sFileFullPath);
+				fclose($file);
+			}catch(Exception $error){
+				return false;
+			}
+		}
+		//複製檔案 CopyFile(sOrgFileFullPath, sOutFileFullPath)
+		public function CopyFile($sOrgFileFullPath, $sOutFileFullPath){
+			try{
+				copy($sOrgFileFullPath, $sOutFileFullPath);
+			}catch(Exception $error){
+				return false;
+			}
+		}
+		//複製資料夾 CopyField(sOrgFieldPath, sOutFieldPath)
+		public function CopyField($sOrgFieldPath, $sOutFieldPath){
+			
+			if(!is_dir($sOrgFieldPath)){  
+				return false ;  
+			} 
+			
+			$from_files = scandir($sOrgFieldPath);  
+
+			//如果目的資料夾不存在，需創建
+			if(!file_exists($sOutFieldPath)){  
+				//若執行失敗，回傳
+				if($this->CreateDirectory($sOutFieldPath)){
+					return false;
+				}
+			}
+			//開始進行複製動作，先檢查來源路徑是否不為空
+			if( !empty($from_files)){  
+				//確認後，開始解析
+				foreach($from_files as $file){  
+					if($file == '.' || $file == '..' ){  
+						continue;  
+					}  
+					//如果來源是個資料夾，再執行一次本身
+					if( is_dir($sOrgFieldPath.'/'.$file) ){
+						$this->CopyField($sOrgFieldPath.'/'.$file, $sOutFieldPath.'/'.$file);  
+					}else{
+						//如果不是資料夾，是單一檔案，就開始複製
+						copy($sOrgFieldPath.'/'.$file, $sOutFieldPath.'/'.$file);  
+					}  
+				}  
+			}
+			return true ;
+		}
+		
+		//刪除檔案 DelFile(sFilePath)
+		public function DelFile($sFilePath){
+			try{
+				unlink($sFilePath);
+			}catch(Exception $error){
+				return false;			
+			}
+			return true;
+		}
+		
+		//刪除資料夾 DelField(sFieldPath)
+		public function DelField($sFieldPath){
+			if (!file_exists($sFieldPath)){
+				return true;
+			}
+			if (!is_dir($sFieldPath) || is_link($sFieldPath)){
+				return unlink($sFieldPath);
+			}
+			
+			foreach (scandir($sFieldPath) as $item) {  
+				if ($item == '.' || $item == '..'){
+					continue;  
+				}
+				
+				if (!$this->DelField($sFieldPath . "/" . $item)) {  
+					chmod($sFieldPath . "/" . $item, 0777);  
+					if (!$this->DelField($sFieldPath . "/" . $item)){
+						return false;  
+					}
+				}  
+			}
+			
+			try{
+				rmdir($sFieldPath);
+			}catch(Exception $error){
+				return false;
+			}
+			return true;  
+		}
+		
+		//寫LOG檔 ThreadLog(clsName, funName, sDescribe = "", sEventDescribe = "", iErr = 0) ??放哪???
+		public function ThreadLog($clsName, $funName, $sDescribe = "", $sEventDescribe = "", $iErr = 0){
+			
+		}
+	#modIO結束
+		
+	#modDataFormate
 		//日期轉換
 		public function DateTime($changeType,$Date=null){
 			$dateStr = "";
@@ -89,9 +207,9 @@
 			}
 			return $data;
 		}
-		#modDataFormate結束
+	#modDataFormate結束
 		
-		#DataInformationSecurity
+	#DataInformationSecurity
 		//資訊全重複檢查是否有遺漏的，並取代為HTML CODE
 		public function replacePackage($arr){
 			$tmpArr = array();
@@ -108,14 +226,14 @@
 			$tmpArr = $arr;
 			return $tmpArr;
 		}
-		#DataInformationSecurity結束
+	#DataInformationSecurity結束
 		
-		#modArrayDebug
+	#modArrayDebug
 		public function debug($DataArray){
 			echo "<pre>";
 			print_r($DataArray);
 			echo "</pre>";
 		}
-		#modArrayDebug結束
+	#modArrayDebug結束
 	}
 ?>
