@@ -21,9 +21,45 @@
 		
 		#modDataFormate
 		//日期轉換
-		public function DateTime(){
-			
-			
+		public function DateTime($changeType,$Date=null){
+			$dateStr = "";
+			$dateStyle = "";
+			if($Date != null or $Date != ''){
+				//先檢查日期是用哪種分割的
+				if($strpos($Date,"/") !== false){
+					$dateArr = explode("/",$Date);
+					$dateStyle = "/";
+				}else if($strpos($Date,"-") !== false){
+					$dateArr = explode("-",$Date);
+					$dateStyle = "-";
+				}else{//不符合現在有的格式
+					return false;
+				}
+				
+				switch($changeType){
+					//西元轉民國(年月日)
+					case "ADyyyyMMdd_RCyyyMMdd":
+						$dateStr = ($dateArr[0]-1911).$dateStyle.($dateArr[1]).$dateStyle.($dateArr[2]);
+					break;
+					//西元轉民國(年月)
+					case "ADyyyyMM_RCyyyMM":
+						$dateStr = ($dateArr[0]-1911).$dateStyle.($dateArr[1]);
+					break;
+					//民國轉西元(年月日)
+					case "RCyyyMMdd_ADyyyyMMdd":
+						$dateStr = ($dateArr[0]+1911).$dateStyle.($dateArr[1]).$dateStyle.($dateArr[2]);
+					break;
+					//日期轉時間秒數?
+					case "CTime":
+						$dateStr = strtotime($Date);
+					break;
+					//取得現在時間秒數?
+					case "CTime_Now":
+						$dateStr = time();
+					break;
+				}
+				return $dateStr;
+			}
 		}
 		
 		//資料庫轉換資料
