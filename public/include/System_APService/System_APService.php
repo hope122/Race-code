@@ -74,29 +74,29 @@
 			}
 		}
 				
-		/*
+		
 		//處理取得主要頁面內容
-		public function pages($dirName,$pageName){
-			$basis = new basis;
-			return $basis->getPageContent($dirName,$pageName);
-		}
+		// public function pages($dirName,$pageName){
+			// $basis = new basis;
+			// return $basis->getPageContent($dirName,$pageName);
+		// }
 		
 		//處理登入事件
-		public function login(){
-			$userlogin = new userlogin;
-			return $userlogin->processLogin($this->conn);
-		}
+		// public function login(){
+			// $userlogin = new userlogin;
+			// return $userlogin->processLogin($this->conn);
+		// }
 		
 		//處理登出事件
-		public function logout(){
-			@session_destroy();
-			return true;
-		}
+		// public function logout(){
+			// @session_destroy();
+			// return true;
+		// }
 		
-		public function dbClose(){
-			$basis = new basis;
-			$basis->close($this->conn);
-		}*/
+		// public function dbClose(){
+			// $basis = new basis;
+			// $basis->close($this->conn);
+		// }
 	}
 	
 	

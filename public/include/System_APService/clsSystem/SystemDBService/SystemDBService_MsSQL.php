@@ -26,12 +26,10 @@
 		
 		//讀取資料 QueryData(sSqlText) as DataTable
 		public function QueryData($sSqlText){
-			$data = NULL;
 			if( !empty($sSqlText) ){
 				$stmt = $this->conn->query($sSqlText);
-				$data = $stmt->fetch_array(MYSQLI_ASSOC);
 			}
-			return $data;	
+			return $stmt;	
 		}
 		
 		//建立Transcation機制 CreateMySqlTranscation
