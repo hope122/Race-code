@@ -1,8 +1,6 @@
 <?php		
-	namespace basisObject;
 	//資料庫連線
-	class executeSQL {
-		public function Data2Array($conn, $strSQL, $kind=0, $pk=NULL){
+	/*	public function Data2Array($conn, $strSQL, $kind=0, $pk=NULL){
 			$data = NULL;
 			if( !empty($strSQL) ){
 				$stmt = $conn->query($strSQL);
@@ -29,16 +27,5 @@
 			}
 			return $data;	
 		}
-		//用於單純INSERT、UPDATE、DELETE等
-		public function execute($conn, $strSQL){
-			if( !empty($strSQL) ){
-				$stmt = $conn->query($strSQL);
-				$executeStatus = true;
-				if(!$stmt){
-					$executeStatus = false;
-				}
-				return $executeStatus;
-			}
-		}
-	}
+*/
 ?>
