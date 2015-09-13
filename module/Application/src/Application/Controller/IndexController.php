@@ -30,7 +30,7 @@ class IndexController extends AbstractActionController
 		$date = date("Y-m-d");
 		$changeDate = $VTs->DateTime("ADyyyyMMdd_RCyyyMMdd",$date);
 		$this->viewContnet['pageContent'] = $changeDate;
-		//-----------BI結束------------
+		//-----------BI結束------------ 
 		
 		//關閉資料庫連線
 		$VTs->DBClose();
