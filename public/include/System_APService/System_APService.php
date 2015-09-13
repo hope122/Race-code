@@ -22,6 +22,8 @@
 		public $SystemDBService;
 		//相關工具
 		public $SystemToolsService;
+		//ini相關設定
+		public $iniSet;
 		//使用者資訊
 		public $userInfo;
 		
@@ -49,6 +51,13 @@
 			$sUser = $VTs->GetINIInfo($strIniFile,$sSection,'user','');
 			$sPassWord = $VTs->GetINIInfo($strIniFile,$sSection,'password','');
 			$sDatabase = $VTs->GetINIInfo($strIniFile,$sSection,'defaultDB','');
+			
+			//放到共同變數中
+			$iniSet["DBSet"]["sServer"] = $sServer;
+			$iniSet["DBSet"]["sUser"] = $sUser;
+			$iniSet["DBSet"]["sPassWord"] = $sPassWord;
+			$iniSet["DBSet"]["sDatabase"] = $sDatabase;
+			
 			//存到變數，以重複利用
 			$this->SystemToolsService = $VTs;
 			//釋放
@@ -66,37 +75,145 @@
 			
 		}
 		
-		public function GetVariablesDefine($VariablesName){
-			if(isset($this->$VariablesName)){
-				return $this->$VariablesName;
-			}else{
-				return null;
-			}
+	#這裡是SystemDBService
+		//資料庫連線
+		public function CreateDBConnection($sServer='', $sDatabase='', $sUser='', $sPassWord=''){
+			$sServer = ($sServer)?$sServer:$iniSet["DBSet"]["sServer"];
+			$sDatabase = ($sDatabase)?$sDatabase:$iniSet["DBSet"]["sDatabase"];
+			$sUser = ($sUser)?$sUser:$iniSet["DBSet"]["sUser"];
+			$sPassWord = ($sPassWord)?$sPassWord:$iniSet["DBSet"]["sPassWord"];
+			
+			$conn = $this->SystemDBService->CreateDBConnection($sServer,$sDatabase,$sUser,$sPassWord);
+			//回傳
+			return $conn;
 		}
-				
 		
-		//處理取得主要頁面內容
-		// public function pages($dirName,$pageName){
-			// $basis = new basis;
-			// return $basis->getPageContent($dirName,$pageName);
-		// }
+		//用於單純INSERT、UPDATE、DELETE等
+		//ExecuteNonQuery(sSqlText)
+		public function ExecuteNonQuery($sSqlText){
+			$execut = false;
+			if( !empty($sSqlText) ){
+				$execut = $this->SystemDBService->ExecuteNonQuery($sSqlText);
+				if(!$execut){
+					print_r('Error SQL: '.$sSqlText);
+				}
+			}
+			return $execut;
+		}
 		
-		//處理登入事件
-		// public function login(){
-			// $userlogin = new userlogin;
-			// return $userlogin->processLogin($this->conn);
-		// }
+		//讀取資料 QueryData(sSqlText) as DataTable
+		public function QueryData($sSqlText){
+			if( !empty($sSqlText) ){
+				$stmt = $this->SystemDBService->QueryData($sSqlText);
+				if(!$stmt){
+					print_r('Error SQL: '.$sSqlText);
+				}
+			}
+			return $stmt;	
+		}
 		
-		//處理登出事件
-		// public function logout(){
-			// @session_destroy();
-			// return true;
-		// }
+		//建立Transcation機制 CreateMySqlTranscation
+		public function Transcation(){
+			$this->SystemDBService->Transcation();
+		}
 		
-		// public function dbClose(){
-			// $basis = new basis;
-			// $basis->close($this->conn);
-		// }
+		//Commit Transction機制 CommitMySqlTranscation
+		public function Commit(){
+			$this->SystemDBService->Commit();
+		}
+		
+		//Rollback Transction機制 RollbackMySqlTranscation
+		public function Rollback(){
+			$this->SystemDBService->Rollback();
+		}
+		
+		//關閉資料庫連線 CloseConnection
+		public function DBClose(){
+			$this->SystemDBService->DBClose();
+		}
+	#這裡是SystemDBService 結束
+		
+	#這裡是	SystemToolsService
+	#modIO
+		//讀取INI檔資料 GetINIInfo(strIniFile, sSection, sKeyName, sDefaultValue = "") As String
+		public function GetINIInfo($strIniFile,$sSection,$sKeyName,$sDefaultValue = "",$originDataArray = false){
+			$this->SystemToolsService->GetINIInfo($strIniFile,$sSection,$sKeyName,$sDefaultValue,$originDataArray);
+		}
+		
+		//使用cmd執行指令
+		public function cmdExecute($sCommand){
+			$this->SystemToolsService->cmdExecute($sCommand);
+		}
+		
+		//建立資料夾 CreateDirectory(sPath)
+		public function CreateDirectory($sPath){
+			$this->SystemToolsService->CreateDirectory($sPath);
+		}
+		
+		//建立檔案 CreateFile(sFileFullPath)
+		public function CreateFile($sFileFullPath){
+			$this->SystemToolsService->CreateFile($sFileFullPath);
+		}
+		
+		//複製檔案 CopyFile(sOrgFileFullPath, sOutFileFullPath)
+		public function CopyFile($sOrgFileFullPath, $sOutFileFullPath){
+			$this->SystemToolsService->CopyFile($sOrgFileFullPath, $sOutFileFullPath);
+		}
+		
+		//複製資料夾 CopyField(sOrgFieldPath, sOutFieldPath)
+		public function CopyField($sOrgFieldPath, $sOutFieldPath){
+			$this->SystemToolsService->CopyField($sOrgFieldPath, $sOutFieldPath);
+		}
+		
+		//刪除檔案 DelFile(sFilePath)
+		public function DelFile($sFilePath){
+			$this->SystemToolsService->DelFile($sFilePath);
+		}
+		
+		//刪除資料夾 DelField(sFieldPath)
+		public function DelField($sFieldPath){
+			$this->SystemToolsService->DelField($sFieldPath);
+		}
+		
+		//寫LOG檔 ThreadLog(clsName, funName, sDescribe = "", sEventDescribe = "", iErr = 0) ??放哪???
+		public function ThreadLog($clsName, $funName, $sDescribe = "", $sEventDescribe = "", $iErr = 0){
+			$this->SystemToolsService->ThreadLog($clsName, $funName, $sDescribe, $sEventDescribe, $iErr);
+		}
+	#modIO結束
+		
+	#modDataFormate
+		//日期轉換
+		public function DateTime($changeType,$Date=null){
+			$dateStr = $this->SystemToolsService->DateTime($changeType,$Date);
+			if(!$dateStr){
+				print_r("Error Date Type: ".$changeType."; or Date: ".$Date);
+				return false;
+			}
+			return $dateStr;
+		}
+		
+		//資料庫轉換資料
+		public function Data2Array($DBQueryData){
+			$data = $this->SystemToolsService->Data2Array($DBQueryData);
+			return $data;
+		}
+	#modDataFormate結束
+		
+	#DataInformationSecurity
+		//資訊全重複檢查是否有遺漏的，並取代為HTML CODE
+		public function replacePackage($arr){
+			$tmpArr = $this->SystemToolsService->replacePackage($arr);
+			return $tmpArr;
+		}
+	#DataInformationSecurity結束
+		
+	#modArrayDebug
+		public function debug($DataArray){
+			$this->SystemToolsService->debug($DataArray);
+		}
+	#modArrayDebug結束
+	#這裡是	SystemToolsService 結束
+		
 	}
 	
 	

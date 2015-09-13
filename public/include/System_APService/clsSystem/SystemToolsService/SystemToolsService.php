@@ -144,16 +144,15 @@
 			$dateStyle = "";
 			if($Date != null or $Date != ''){
 				//先檢查日期是用哪種分割的
-				if($strpos($Date,"/") !== false){
+				if(strpos($Date,"/") !== false){
 					$dateArr = explode("/",$Date);
 					$dateStyle = "/";
-				}else if($strpos($Date,"-") !== false){
+				}else if(strpos($Date,"-") !== false){
 					$dateArr = explode("-",$Date);
 					$dateStyle = "-";
 				}else{//不符合現在有的格式
 					return false;
 				}
-				
 				switch($changeType){
 					//西元轉民國(年月日)
 					case "ADyyyyMMdd_RCyyyMMdd":
