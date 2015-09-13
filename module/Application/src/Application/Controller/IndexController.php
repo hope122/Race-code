@@ -3,46 +3,40 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-//use relayInterface\basis;
-use systemInterface\appInterface;
+use System_APService\clsSystem;
 
 class IndexController extends AbstractActionController
 {
 	public $viewContnet;
 	public $conn;
 	public function __construct(){
-		/*$basisUI = new basisUI;
-		$this->conn = $basisUI->connDB('oauth');*/
 		$this->viewContnet = array();
 	}
     public function indexAction()
     {
-		$VTs = new appInterface;
+		$VTs = new clsSystem;
 		//先初始化
 		$VTs->initialization();
-		//頁面資料夾名稱
-		$dirName='index';
-		//頁面檔名
-		$pageName='login_page';
-		//取得頁面
-		$this->viewContnet['pageContent'] = $VTs->pages($dirName,$pageName);
 		
-		//結束資料庫連線
-		$VTs->dbClose();
-		//釋放物件
-		$VTs = null;
-		//$basis = new basis;
-		//$this->viewContnet['pageContent'] = $basis->getPageContent('index','login_page');
-		/*if(!$_SESSION["uid"]){
-			$this->viewContnet['pageContent'] = $basis->getPageContent('index','login_page');
-		}else{
-			$isLoginContent = $basis->getPageContent('index','after_login');
-			$isLoginContent = str_replace("@@requestTokenCode@@",$_SESSION["requestTokenCode"],$isLoginContent);
-			$this->viewContnet['pageContent']= $isLoginContent;
-			//header("location: http://127.0.0.1:120/auth_back.php?requestTokenCode=".$_SESSION["requestTokenCode"]);
-			//exit();
-		}*/
-		//$basisUI->debug($_SESSION);
+		//-----------BI開始------------
+		//執行查詢
+		$strSQL = "select * from account";
+		$data = $VTs->QueryData($strSQL);
+		//資料轉換
+		$data = $VTs->Data2Array($data);
+		//debug，印出資料用
+		$VTs->debug($data);
+		//日期轉換
+		$date = date("Y-m-d");
+		$changeDate = $VTs->DateTime("ADyyyyMMdd_RCyyyMMdd",$date);
+		$this->viewContnet['pageContent'] = $changeDate;
+		//-----------BI結束------------ 
+		
+		//關閉資料庫連線
+		$VTs->DBClose();
+		//釋放
+		$VTs=null;
+		
 		return new ViewModel($this->viewContnet);
     }
 }
