@@ -2,13 +2,17 @@
 	//跨網域請求
 	header("Access-Control-Allow-Origin: *");
 	include("include/config.php");
-	use modelUI\basisUI;
+	use System_APService\clsSystem;
 	
-	$basis = new basisUI;
-	$conn = $basis->connDB();
+	$VTs = new clsSystem;
+	//先初始化
+	$VTs->initialization();
 	
-	$strSQL = "select access_token from token where login_code = '".$_POST["requestTokenCode"]."'";
-	$data = $basis->Data2Array($conn,$strSQL);
-	//$basis->debug($data[0]);
-	echo json_encode($data[0]);
+	$strSQL = "select access_token from token where login_code = '".$_POST["login_code"]."'";
+	$data = $VTs->QueryData($strSQL);
+	//資料轉換
+	$data = $VTs->Data2Array($data);
+	//print_r($data);
+	echo $VTs->Data2Json($data[0]);
+	$VTs = null;
 ?>

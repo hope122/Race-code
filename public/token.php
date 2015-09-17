@@ -2,15 +2,19 @@
 	//跨網域請求
 	header("Access-Control-Allow-Origin: *");
 	include("include/config.php");
-	use modelUI\basisUI;
+	use System_APService\clsSystem;
 	
-	$basis = new basisUI;
-	$conn = $basis->connDB();
+	$VTs = new clsSystem;
+	//先初始化
+	$VTs->initialization();
 	
 	$strSQL = "select b.uid,b.userName,b.userMail,login_date from token a ";
 	$strSQL .= "left join account b on a.uid = b.uid ";
 	$strSQL .= " where a.access_token = '".$_POST["access_token"]."'";
-	$data = $basis->Data2Array($conn,$strSQL);
+	$data = $VTs->QueryData($strSQL);
+	//資料轉換
+	$data = $VTs->Data2Array($data);
 	//$basis->debug($data[0]);
-	echo json_encode($data[0]);
+	echo $VTs->Data2Json($data[0]);
+	$VTs = null;
 ?>

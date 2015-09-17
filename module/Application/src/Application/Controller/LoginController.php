@@ -42,11 +42,22 @@ class LoginController extends AbstractActionController
 			if(!empty($data)){
 				
 				$uid = $data[0]["uid"];
-				
-				//產生Token並存到資料表中，會回傳requestTokenCode，以供後續Oauth使用
-				//$token = new token;
-				//$requestTokenCode = $token->saveToken($uid,$conn);
+				//驗證USER是否已存在Token
+				$strSQL = "select uid from token where uid='".$uid."'";
+				$TokenData = $VTs->QueryData($strSQL);
+				//資料轉換
+				$TokenData = $VTs->Data2Array($TokenData);
+							
+				//產生Token，會回傳Login_Code、Access_Token
 				$loginArr = $VTs->CreatLoginCodeAndToken($uid);
+				//存到Token資料表中，以供後續Oauth使用
+				if(empty($TokenData)){
+					$strSQL = "insert into token(uid,login_code,access_token,login_from) values('".$uid."','".$loginArr["Login_Code"]."','".$loginArr["Access_Token"]."','".$_SERVER["REMOTE_ADDR"]."')";
+				}else{
+					$strSQL = "update token set login_code='".$loginArr["Login_Code"]."',access_token='".$loginArr["Access_Token"]."',login_from='".$_SERVER["REMOTE_ADDR"]."',login_date='".date("Y-m-d H:i:s")."' where uid='".$uid."'";
+				}
+				//確定存取Token到資料表中
+				$VTs->QueryData($strSQL);
 				
 				//紀錄SESSION
 				$_SESSION["uid"] = $uid;
