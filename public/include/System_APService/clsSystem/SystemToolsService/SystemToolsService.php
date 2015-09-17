@@ -206,6 +206,16 @@
 			}
 			return $data;
 		}
+		
+		//資料轉換成json(encode)
+		public function Data2Json($Data){
+			return json_encode($Data);
+		}
+		
+		//json轉換成資料轉(decode)
+		public function Json2Data($JsonData){
+			return json_decode($JsonData);
+		}
 	#modDataFormate結束
 		
 	#DataInformationSecurity
