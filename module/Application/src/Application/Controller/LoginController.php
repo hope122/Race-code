@@ -35,8 +35,6 @@ class LoginController extends AbstractActionController
 			
 			$strSQL = "select * from account where userAc = '".$userAc."' and userPw = md5('".$userPw."')";
 			$data = $VTs->QueryData($strSQL);
-			//資料轉換
-			$data = $VTs->Data2Array($data);
 			
 			//2.通過檢驗後，回傳登入Code與狀態
 			if(!empty($data)){
@@ -45,8 +43,6 @@ class LoginController extends AbstractActionController
 				//驗證USER是否已存在Token
 				$strSQL = "select uid from token where uid='".$uid."'";
 				$TokenData = $VTs->QueryData($strSQL);
-				//資料轉換
-				$TokenData = $VTs->Data2Array($TokenData);
 							
 				//產生Token，會回傳Login_Code、Access_Token
 				$loginArr = $VTs->CreatLoginCodeAndToken($uid);

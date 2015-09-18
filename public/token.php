@@ -12,8 +12,7 @@
 	$strSQL .= "left join account b on a.uid = b.uid ";
 	$strSQL .= " where a.access_token = '".$_POST["access_token"]."'";
 	$data = $VTs->QueryData($strSQL);
-	//資料轉換
-	$data = $VTs->Data2Array($data);
+
 	//$basis->debug($data[0]);
 	echo $VTs->Data2Json($data[0]);
 	$VTs = null;

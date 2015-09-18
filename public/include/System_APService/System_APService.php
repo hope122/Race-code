@@ -112,12 +112,9 @@
 		//讀取資料 QueryData(sSqlText) as DataTable
 		public function QueryData($sSqlText){
 			if( !empty($sSqlText) ){
-				$stmt = $this->SystemDBService->QueryData($sSqlText);
-				if(!$stmt){
-					print_r('Error SQL: '.$sSqlText);
-				}
+				$data = $this->SystemDBService->QueryData($sSqlText);
 			}
-			return $stmt;	
+			return $data;	
 		}
 		
 		//建立Transcation機制 CreateMySqlTranscation
@@ -198,12 +195,6 @@
 				return false;
 			}
 			return $dateStr;
-		}
-		
-		//資料庫轉換資料
-		public function Data2Array($DBQueryData){
-			$data = $this->SystemToolsService->Data2Array($DBQueryData);
-			return $data;
 		}
 		
 		//資料轉換成json(encode)

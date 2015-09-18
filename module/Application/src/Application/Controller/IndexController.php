@@ -22,8 +22,7 @@ class IndexController extends AbstractActionController
 		//執行查詢
 		$strSQL = "select * from account";
 		$data = $VTs->QueryData($strSQL);
-		//資料轉換
-		$data = $VTs->Data2Array($data);
+		
 		//debug，印出資料用
 		$VTs->debug($data);
 		//日期轉換

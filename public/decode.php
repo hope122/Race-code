@@ -10,8 +10,7 @@
 	
 	$strSQL = "select access_token from token where login_code = '".$_POST["login_code"]."'";
 	$data = $VTs->QueryData($strSQL);
-	//資料轉換
-	$data = $VTs->Data2Array($data);
+	
 	//print_r($data);
 	echo $VTs->Data2Json($data[0]);
 	$VTs = null;

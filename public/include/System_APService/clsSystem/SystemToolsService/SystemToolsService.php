@@ -178,35 +178,7 @@
 				return $dateStr;
 			}
 		}
-		
-		//資料庫轉換資料
-		public function Data2Array($DBQueryData){
-			$data = null;
-			if($DBQueryData){
-				$i=0;
-				if( $DBQueryData and $DBQueryData->num_rows){
-					while ($ar = $DBQueryData->fetch_array(MYSQLI_ASSOC)) {
-						$j=0;
-						foreach($ar as $key=>$val){
-							//echo $key."=>".$val;
-							if( !empty($pk) ){
-								$p = $ar[$pk];
-								if($kind==0) $data[$p][$key]=$val;
-								elseif($kind==1) $data[$p][$j]=$val;
-							}
-							else{
-								if($kind==0) $data[$i][$key]=$val;
-								elseif($kind==1) $data[$i][$j]=$val;
-							}
-							$j++;
-						}
-						$i++;
-					}
-				}
-			}
-			return $data;
-		}
-		
+				
 		//資料轉換成json(encode)
 		public function Data2Json($Data){
 			return json_encode($Data);
