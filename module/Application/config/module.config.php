@@ -60,7 +60,7 @@ return array(
 					),
 					'defaults' => array(
 						'controller' => 'Application\Controller\Login',
-						'action'     => 'login',
+						'action'     => 'index',
 					),
 				),
 			),

@@ -15,6 +15,7 @@
 	//引用物件命名空間
 	use SystemDBService\clsDB_MySQL;
 	use SystemToolsService\clsTools;
+	use SystemTokenService\clsToken;
 	//引用完畢
 	
 	class clsSystem{
@@ -22,6 +23,8 @@
 		public $SystemDBService;
 		//相關工具
 		public $SystemToolsService;
+		//Token相關
+		public $SystemTokenService;
 		//ini相關設定
 		public $iniSet;
 		//使用者資訊
@@ -71,6 +74,11 @@
 			$this->SystemDBService = $VTc;
 			//釋放
 			$VTs = null;
+			
+			$VTs = new clsToken;
+			$this->SystemTokenService = $VTs;
+			//釋放
+			$VTs = null;
 			//結束
 			
 		}
@@ -104,12 +112,9 @@
 		//讀取資料 QueryData(sSqlText) as DataTable
 		public function QueryData($sSqlText){
 			if( !empty($sSqlText) ){
-				$stmt = $this->SystemDBService->QueryData($sSqlText);
-				if(!$stmt){
-					print_r('Error SQL: '.$sSqlText);
-				}
+				$data = $this->SystemDBService->QueryData($sSqlText);
 			}
-			return $stmt;	
+			return $data;	
 		}
 		
 		//建立Transcation機制 CreateMySqlTranscation
@@ -192,10 +197,14 @@
 			return $dateStr;
 		}
 		
-		//資料庫轉換資料
-		public function Data2Array($DBQueryData){
-			$data = $this->SystemToolsService->Data2Array($DBQueryData);
-			return $data;
+		//資料轉換成json(encode)
+		public function Data2Json($Data){
+			return $this->SystemToolsService->Data2Json($Data);
+		}
+		
+		//json轉換成資料轉(decode)
+		public function Json2Data($JsonData){
+			return $this->SystemToolsService->Data2Json($JsonData);
 		}
 	#modDataFormate結束
 		
@@ -213,7 +222,14 @@
 		}
 	#modArrayDebug結束
 	#這裡是	SystemToolsService 結束
-		
+	
+	#創建Login code & Token
+		//創建Login Code & Token
+		public function CreatLoginCodeAndToken($userID){
+			//回傳結果是一個陣列
+			return $this->SystemTokenService->CreatLoginCodeAndToken($userID);
+		}
+	#創建Login code & Token 結束	
 	}
 	
 	

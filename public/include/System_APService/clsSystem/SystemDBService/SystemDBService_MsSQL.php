@@ -26,10 +26,13 @@
 		
 		//讀取資料 QueryData(sSqlText) as DataTable
 		public function QueryData($sSqlText){
+			$data = null;
 			if( !empty($sSqlText) ){
 				$stmt = $this->conn->query($sSqlText);
+				$data = $this->Data2Array($stmt);
+				
 			}
-			return $stmt;	
+			return $data;	
 		}
 		
 		//建立Transcation機制 CreateMySqlTranscation
@@ -53,6 +56,34 @@
 		//關閉資料庫連線 CloseConnection
 		public function DBClose(){
 			$this->conn->close();
+		}
+		
+		//資料庫轉換資料
+		private function Data2Array($DBQueryData){
+			$data = null;
+			if($DBQueryData){
+				$i=0;
+				if( $DBQueryData and $DBQueryData->num_rows){
+					while ($ar = $DBQueryData->fetch_array(MYSQLI_ASSOC)) {
+						$j=0;
+						foreach($ar as $key=>$val){
+							//echo $key."=>".$val;
+							if( !empty($pk) ){
+								$p = $ar[$pk];
+								if($kind==0) $data[$p][$key]=$val;
+								elseif($kind==1) $data[$p][$j]=$val;
+							}
+							else{
+								if($kind==0) $data[$i][$key]=$val;
+								elseif($kind==1) $data[$i][$j]=$val;
+							}
+							$j++;
+						}
+						$i++;
+					}
+				}
+			}
+			return $data;
 		}
 		
 	}
