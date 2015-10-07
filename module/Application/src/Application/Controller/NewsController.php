@@ -5,7 +5,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use System_APService\clsSystem;
 
-class IndexController extends AbstractActionController
+class NewsController extends AbstractActionController
 {
 	public $viewContnet;
 	public $conn;
@@ -19,17 +19,24 @@ class IndexController extends AbstractActionController
 		$VTs->initialization();
 		
 		//-----------BI開始------------
-		//執行查詢
-		$strSQL = "select * from account";
+	
+		//取得公告資料
+		$strSQL = "select * from news";
 		$data = $VTs->QueryData($strSQL);
-
-		//debug，印出資料用
-		$VTs->debug($data);
 		
-		//日期轉換
-		$date = date("Y-m-d");
-		$changeDate = $VTs->DateTime("ADyyyyMMdd_RCyyyMMdd",$date);
-		$this->viewContnet['pageContent'] = $changeDate;
+		//debug，印出資料用
+		if(!Empty($data)){
+			//$VTs->debug($data);
+			foreach( $data as $arr ){
+				$VTs->debug($arr);
+				if($arr['uid']==1){
+					echo "第一則";
+				}
+			}
+		}else{
+			
+		}
+		
 		//-----------BI結束------------ 
 		
 		//關閉資料庫連線
